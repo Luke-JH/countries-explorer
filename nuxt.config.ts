@@ -4,6 +4,9 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: ["@nuxtjs/leaflet", "@nuxtjs/tailwindcss"],
   ssr: false,
+  experimental: {
+    viteEnvironmentApi: true,
+  },
   runtimeConfig: {
     public: {
       apiUrl: "",
