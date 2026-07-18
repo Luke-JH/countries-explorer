@@ -1,12 +1,15 @@
+import type { UseFetchOptions } from "#app";
+
 export const useFetchCustom = <T>(
   path: MaybeRefOrGetter<string>,
-  options: Parameters<typeof useFetch<T>>[1] = {},
+  options: UseFetchOptions<T> = {},
 ) => {
   const { apiUrl, apiKey } = useRuntimeConfig().public;
 
-  return useFetch<T>(path, {
+  const defaults: UseFetchOptions<T> = {
     baseURL: apiUrl,
     headers: { Authorization: `Bearer ${apiKey}` },
-    ...options,
-  });
+  };
+
+  return useFetch(path, { ...defaults, ...options });
 };

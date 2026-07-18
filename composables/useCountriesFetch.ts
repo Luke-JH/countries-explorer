@@ -1,7 +1,8 @@
+import type { UseFetchOptions } from "#app";
+
 export const useCountriesFetch = <T>(
   path: MaybeRefOrGetter<string>,
-  params: MaybeRefOrGetter<Record<string, string>> = {},
-  options: Parameters<typeof useFetchCustom<T>>[1] = {},
+  options: UseFetchOptions<T> = {},
 ) => {
-  return useFetchCustom<T>(path, { query: params, ...options });
+  return useFetchCustom(path, options);
 };
