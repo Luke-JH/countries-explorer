@@ -19,14 +19,22 @@
       ‹
     </button>
     <template v-for="(item, index) in items" :key="index">
-      <span v-if="item === 'gap'" class="px-1 text-atlas-muted dark:text-atlas-muted-dark" aria-hidden="true">…</span>
+      <span
+        v-if="item === 'gap'"
+        class="px-1 text-atlas-muted dark:text-atlas-muted-dark"
+        aria-hidden="true"
+        >…</span
+      >
       <button
         v-else
         type="button"
         class="nav-btn min-w-8"
         :aria-current="item === page ? 'page' : undefined"
         :aria-label="`Page ${item}`"
-        :class="item === page && 'bg-atlas-accent text-white dark:bg-atlas-accent-dark dark:text-atlas-surface-dark'"
+        :class="
+          item === page &&
+          'bg-atlas-accent text-white dark:bg-atlas-accent-dark dark:text-atlas-surface-dark'
+        "
         @click="$emit('update:page', item)"
       >
         {{ item }}
@@ -54,13 +62,20 @@
 </template>
 
 <script setup lang="ts">
-const { page, totalPages } = defineProps<{ page: number; totalPages: number }>();
+const { page, totalPages } = defineProps<{
+  page: number;
+  totalPages: number;
+}>();
 defineEmits<{ "update:page": [page: number] }>();
 
 const items = computed<(number | "gap")[]>(() => {
   const pages = new Set<number>([1, totalPages, page - 1, page, page + 1]);
-  const sorted = [...pages].filter((n) => n >= 1 && n <= totalPages).sort((a, b) => a - b);
+  // numeric sort - default sort would break past page 9
+  const sorted = [...pages]
+    .filter((n) => n >= 1 && n <= totalPages)
+    .sort((a, b) => a - b);
 
+  // ellipsis logic (if consecutive items gap > 1)
   const result: (number | "gap")[] = [];
   sorted.forEach((n, i) => {
     if (i > 0 && n - sorted[i - 1]! > 1) result.push("gap");
