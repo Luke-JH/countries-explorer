@@ -8,7 +8,8 @@
         "generate": "nuxt generate",
         "preview": "nuxt preview",
         "postinstall": "nuxt prepare",
-        "prettier": "prettier . --check"
+        "prettier": "prettier . --check",
+        "typecheck": "nuxt typecheck"
     },
     "dependencies": {
         "@nuxtjs/leaflet": "^1.3.2",
