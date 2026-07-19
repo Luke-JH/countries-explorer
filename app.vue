@@ -1,21 +1,6 @@
 <template>
-  <div>
-    <pre>{{ countries }}</pre>
-    <LMap
-      :zoom="6"
-      :center="[47.21322, -1.559482]"
-      :use-global-leaflet="false"
-      class="mx-auto !h-[350px] !w-[500px]"
-    >
-      <LTileLayer
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        attribution='&amp;copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
-        layer-type="base"
-        name="OpenStreetMap"
-      />
-    </LMap>
+  <div class="min-h-screen bg-atlas-surface font-sans text-atlas-ink dark:bg-atlas-surface-dark dark:text-atlas-ink-dark">
+    <NuxtRouteAnnouncer />
+    <NuxtPage />
   </div>
 </template>
-<script setup lang="ts">
-const countries = await useCountriesFetch("");
-</script>
