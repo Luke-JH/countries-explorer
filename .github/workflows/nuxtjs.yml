@@ -1,0 +1,87 @@
+name: Custom Nuxt Pipeline
+on:
+    workflow_dispatch: # manual execution
+    push: # push to any branch
+
+# Set github token permissions
+permissions:
+    contents: read
+    pages: write
+    id-token: write
+
+# Allow only one concurrent run
+concurrency:
+    group: "pages"
+    cancel-in-progress: false
+
+jobs:
+    format:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Setup Node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "24"
+
+            - name: Install Packages
+              run: npm ci
+
+            - name: Check Formatting
+              run: npm run prettier
+
+    typecheck:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Setup Node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "24"
+
+            - name: Install Packages
+              run: npm ci
+
+            - name: Type Check
+              run: npm run typecheck
+
+    build:
+        runs-on: ubuntu-latest
+        needs: [format, typecheck]
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Setup Node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "24"
+
+            - name: Install Packages
+              run: npm ci
+
+            - name: Build
+              run: npx nuxt build --preset github_pages
+
+            - name: Upload Artifact
+              uses: actions/upload-pages-artifact@v3
+              with:
+                  path: ./.output/public
+
+    deploy:
+        if: github.ref == 'refs/heads/main' # Only deploy from main branch
+        needs: build
+
+        environment:
+            name: github_pages
+            url: ${{ steps.deployment.outputs.page_url }}
+
+        runs-on: ubuntu-latest
+        steps:
+            - name: Deploy to GitHub Pages
+              id: deployment
+              uses: actions/deploy-pages@v4
